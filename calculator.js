@@ -1,53 +1,53 @@
-// Import the readline module to interact with the command line
-const readline = require('readline');
+const http = require('http');
+const url = require('url');
 
-// Create an interface for reading input from the command line
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-// Function to perform the arithmetic operation
+// Function to perform arithmetic operations
 function calculate(num1, num2, operator) {
   let result;
   switch (operator) {
-    case '+':
+    case 'add':
       result = num1 + num2;
       break;
-    case '-':
+    case 'subtract':
       result = num1 - num2;
       break;
-    case '*':
+    case 'multiply':
       result = num1 * num2;
       break;
-    case '/':
+    case 'divide':
       if (num2 === 0) {
-        result = 'Error: Division by zero is not allowed';
+        result = 'Error: Division by zero';
       } else {
         result = num1 / num2;
       }
       break;
     default:
-      result = 'Invalid operator';
+      result = 'Invalid operator. Use add, subtract, multiply, or divide.';
   }
   return result;
 }
 
-// Prompt the user for input
-rl.question('Enter the first number: ', (num1) => {
-  rl.question('Enter the operator (+, -, *, /): ', (operator) => {
-    rl.question('Enter the second number: ', (num2) => {
-      // Convert user input to numbers
-      num1 = parseFloat(num1);
-      num2 = parseFloat(num2);
+// Create the server
+const server = http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url, true);
+  const { num1, num2, operator } = parsedUrl.query;
 
-      // Perform the calculation and display the result
-      const result = calculate(num1, num2, operator);
-      console.log(`Result: ${result}`);
-
-      // Close the readline interface
-      rl.close();
-    });
-  });
+  if (num1 && num2 && operator) {
+    const result = calculate(parseFloat(num1), parseFloat(num2), operator);
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end(`Result: ${result}`);
+  } else {
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.end('Please provide num1, num2, and operator query parameters.');
+  }
 });
+
+// Set the port to 3000 or use environment variable
+const port = process.env.PORT || 3000;
+
+// Start the server
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
 
