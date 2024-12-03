@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .calculator {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <h1>Simple Calculator</h1>
+    <form id="calcForm">
+      <input type="number" id="num1" name="num1" placeholder="Enter first number" required>
+      <input type="number" id="num2" name="num2" placeholder="Enter second number" required>
+      <select id="operator" name="operator" required>
+        <option value="add">Add</option>
+        <option value="subtract">Subtract</option>
+        <option value="multiply">Multiply</option>
+        <option value="divide">Divide</option>
+      </select>
+      <button type="submit">Calculate</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Function to handle form submission
+    document.getElementById('calcForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const num1 = document.getElementById('num1').value;
+      const num2 = document.getElementById('num2').value;
+      const operator = document.getElementById('operator').value;
+
+      const url = `http://localhost:3000/?num1=${num1}&num2=${num2}&operator=${operator}`;
+
+      // Send GET request to the server
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('result').innerText = `Result: ${data}`;
+        })
+        .catch(error => {
+          document.getElementById('result').innerText = 'Error: Could not calculate.';
+        });
+    });
+  </script>
+
+</body>
+</html>
+
